@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-work-sans), "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+}
+
+:root {
+  --paper: #fbfcfd;
+  --surface: #ffffff;
+  --wash: #f2f6fa;
+  --wash-deep: #eaf2f9;
+
+  --ink: #0e1a26;
+  --ink-soft: #45566a;
+  --ink-faint: #5c6d7e;
+  --ink-onblue: #ffffff;
+  --ink-onblue-soft: #d5e6f6;
+
+  --accent: #0177c1;
+  --accent-hover: #0166a6;
+  --accent-deep: #0c3f73;
+  --accent-cyan: #00c0f4;
+  --accent-light: #2ea3f2;
+  --accent-tint: #c4d7f2;
+  --accent-soft: #eaf3fa;
+  --accent-contrast: #ffffff;
+
+  --rule: #e2e8ee;
+  --rule-strong: #cbd6e0;
+  --line: #e2e8ee;
+  --line-strong: #93a7ba;
+
+  --good: #0f7a55;
+  --warn: #ac4c0b;
+
+  --shadow-card: 0 1px 2px #0e1a260a, 0 12px 28px -14px #0e1a2629;
+  --shadow-lift: 0 1px 2px #0e1a260d, 0 20px 40px -18px #0e1a2638;
+
+  --radius: 6px;
+  --radius-lg: 8px;
+  --step-lede: 1.1875rem;
+}
+
+html {
+  color-scheme: light;
+  background-color: var(--paper);
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.arena-display {
+  color: var(--ink);
+  font-size: clamp(2.5rem, 1.85rem + 2.7vw, 4rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.arena-h2 {
+  color: var(--ink);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.arena-question {
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.028em;
+  text-wrap: pretty;
+}
+
+.arena-heading {
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.022em;
+}
+
+.arena-lede {
+  color: var(--ink-soft);
+  font-size: var(--step-lede);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.arena-eyebrow {
+  color: var(--ink-faint);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.arena-rule {
+  border-top: 1px solid var(--rule);
+}
+
+.arena-band {
+  background-color: var(--ink);
+  color: var(--ink-onblue);
+}
+
+.arena-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(90deg, #0000 0, #000 34px);
+  mask-image: linear-gradient(90deg, #0000 0, #000 34px);
+}
+
+.arena-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.arena-enter {
+  animation: 0.3s cubic-bezier(0.22, 1, 0.36, 1) both arena-fade-up;
+}
+
+.arena-halo {
+  animation: 1.9s cubic-bezier(0.45, 0, 0.55, 1) infinite arena-halo;
+}
+
+@keyframes arena-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes arena-halo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 #0177c100;
+  }
+  50% {
+    box-shadow: 0 0 0 4px #0177c126;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    color: #000;
+    background: #fff;
+  }
+}

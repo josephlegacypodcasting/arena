@@ -23,7 +23,8 @@ with an empty file the app runs end to end.
 | Variable | Default | What it does |
 | --- | --- | --- |
 | `NEXT_PUBLIC_GATE_MODE` | `first` | Where the lead form sits: `first` (before the questions), `last` (after them), `off` (no gate). |
-| `NEXT_PUBLIC_ARENA_CTA_URL` | Arena's Calendly | Booking link on the result page. |
+| `NEXT_PUBLIC_ARENA_BOOKING_URL` | Arena's LeadConnector widget | GoHighLevel booking widget embedded on the result page. |
+| `NEXT_PUBLIC_ARENA_CTA_URL` | the widget URL | Plain link shown only when scripting is unavailable. |
 | `ANTHROPIC_API_KEY` | _empty_ | When set, Claude writes the result (`source: "claude"`). When empty, the roadmap's own rules do (`source: "mock"`), and the result footer says so. |
 | `ARENA_MODEL` | `claude-sonnet-5` | Model used for the written result. |
 | `ARENA_LEAD_WEBHOOK_URL` | _empty_ | POST each captured lead to a GoHighLevel inbound webhook. Without it leads are only logged to the server console. |
@@ -75,6 +76,17 @@ arrives in the CRM tagged as Podcast on both fields.
 
 A webhook failure never reaches the visitor: the route logs it and still returns `ok`,
 and the request times out after 8 seconds so a slow CRM cannot hold the browser open.
+
+## Booking
+
+The result page embeds the GoHighLevel booking widget inline rather than linking out, so
+the roadmap stays on screen while the visitor picks a time. `components/booking-embed.tsx`
+renders the iframe and loads `form_embed.js`, which sets the iframe height from a
+postMessage — the `min-height` on the iframe only stops it collapsing before that runs,
+and `BOOKING_EMBED_ID` in `lib/config.ts` is the id that script targets.
+
+The visitor's name and email are appended to the widget URL as `first_name`, `last_name`
+and `email` so they are not asked to type them a second time.
 
 ## How it is put together
 

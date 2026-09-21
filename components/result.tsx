@@ -2,12 +2,11 @@
 
 import * as React from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { BRAND, CTA_MINUTES, CTA_URL } from "@/lib/config";
+import { BookingEmbed } from "@/components/booking-embed";
+import { BRAND, CTA_MINUTES } from "@/lib/config";
 import { QUESTION_COUNT_WORD } from "@/lib/questions";
-import type { Assessment } from "@/lib/schema";
+import type { Assessment, Lead } from "@/lib/schema";
 import { clampStep, getStep } from "@/lib/steps";
 import { cn } from "@/lib/utils";
 
@@ -57,16 +56,17 @@ function Section({
 
 export function Result({
   assessment,
-  firstName,
+  lead,
   source,
   movedFrom,
 }: {
   assessment: Assessment;
-  firstName?: string;
+  lead?: Lead | null;
   source: "claude" | "mock";
   movedFrom?: number;
 }) {
   const reduced = useReducedMotion();
+  const firstName = lead?.firstName;
   const position = clampStep(assessment.step);
   const step = getStep(position);
   const nextStep = position < 5 ? getStep(clampStep(position + 1)) : null;
@@ -268,19 +268,11 @@ export function Result({
             the one job you most want to run better and they will tell you honestly whether this is
             worth your time yet, and what it would take. There is nothing to buy on the call.
           </p>
-          <Button
-            asChild
-            size="lg"
-            variant="onBand"
-            className="mt-7 h-auto w-full py-3.5 text-center whitespace-normal sm:w-auto"
-          >
-            <a href={CTA_URL} target="_blank" rel="noopener noreferrer">
-              Book a {CTA_MINUTES} minute call
-              <ArrowRight className="h-4.5 w-4.5 shrink-0" aria-hidden />
-            </a>
-          </Button>
+          <div className="mt-7 overflow-hidden rounded-[var(--radius)] bg-white p-2 sm:p-3">
+            <BookingEmbed lead={lead} />
+          </div>
           <p className="mt-4 text-[0.8125rem] leading-relaxed text-[var(--ink-onblue-soft)]">
-            Opens Arena&apos;s calendar in a new tab. Your roadmap stays on this page.
+            Pick a time above. Your roadmap stays on this page.
           </p>
         </section>
       </Reveal>

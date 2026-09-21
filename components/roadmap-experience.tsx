@@ -327,7 +327,7 @@ export function RoadmapExperience({ gateMode }: { gateMode?: GateMode }) {
           <ReadingPanel position={position} state="settled" signals={read.signals} />
           <Result
             assessment={result.assessment}
-            firstName={lead?.firstName}
+            lead={lead}
             source={result.source}
             movedFrom={read.step !== position ? read.step : undefined}
           />

@@ -92,6 +92,9 @@ real contact there**. Override the identity with `TEST_EMAIL`, `TEST_FIRST_NAME`
 `TEST_LAST_NAME`. To rehearse without touching the CRM, blank `ARENA_LEAD_WEBHOOK_URL`
 and read the payload from the dev server console instead.
 
+The payload is a stable 42 keys on both events; missing values arrive as empty strings.
+See [docs/crm-fields.md](docs/crm-fields.md) for the custom fields to create in the CRM.
+
 Note that a visitor who abandons mid-quiz only ever produces the `capture` event, so
 their contact carries a name, an email and the campaign fields but no answers.
 

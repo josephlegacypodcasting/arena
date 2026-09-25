@@ -74,10 +74,9 @@ export function buildLeadPayload({
       clean(tracking.source_channel) || clean(tracking.utm_medium) || DEFAULT_SOURCE_CHANNEL,
 
     event,
+    gate_mode: gateMode ?? "",
     submitted_at: new Date().toISOString(),
   };
-
-  if (gateMode) payload.gate_mode = gateMode;
 
   for (const key of [
     "utm_source",
@@ -91,48 +90,46 @@ export function buildLeadPayload({
     "page_url",
     "referrer",
   ] as const) {
-    const value = clean(tracking[key]);
-    if (value) payload[key] = value;
+    payload[key] = clean(tracking[key]);
   }
 
-  // Only meaningful once the questions have been answered.
-  if (Object.keys(answers).length > 0) {
-    payload.readiness_step = step;
-    payload.readiness_step_name = getStep(step).name;
-    payload.readiness_confidence = assessment?.confidence ?? rubric.confidence;
-    payload.questions_answered = QUESTIONS.filter((q) => {
-      const value = answers[q.id];
-      return Array.isArray(value) ? value.length > 0 : clean(value as string).length > 0;
-    }).length;
-    payload.questions_total = QUESTIONS.length;
+  const answered = QUESTIONS.filter((q) => {
+    const value = answers[q.id];
+    return Array.isArray(value) ? value.length > 0 : clean(value as string).length > 0;
+  }).length;
 
-    for (const question of QUESTIONS) {
-      const value = answers[question.id];
-      if (value === undefined) continue;
-      const rendered = Array.isArray(value)
-        ? value.map((v) => optionLabel(question.id, v)).join(", ")
-        : question.type === "text"
-          ? value
-          : optionLabel(question.id, value);
-      if (!clean(rendered)) continue;
-      payload[`answer_${question.id}`] = rendered;
-    }
+  payload.readiness_step = answered > 0 ? step : "";
+  payload.readiness_step_name = answered > 0 ? getStep(step).name : "";
+  payload.readiness_confidence = answered > 0 ? (assessment?.confidence ?? rubric.confidence) : "";
+  payload.questions_answered = answered;
+  payload.questions_total = QUESTIONS.length;
+
+  for (const question of QUESTIONS) {
+    const value = answers[question.id];
+    // " | " rather than ", ", because several option labels contain commas of
+    // their own ("Writing, email and proposals") and would otherwise be
+    // impossible to split back apart in the CRM.
+    const rendered =
+      value === undefined
+        ? ""
+        : Array.isArray(value)
+          ? value.map((v) => optionLabel(question.id, v)).join(" | ")
+          : question.type === "text"
+            ? value
+            : optionLabel(question.id, value);
+    payload[`answer_${question.id}`] = rendered;
   }
 
-  if (assessment) {
-    payload.result_headline = assessment.headline;
-    payload.result_where_you_are = assessment.whereYouAre;
-    payload.result_strengths = assessment.strengths.join(" | ");
-    payload.result_gaps = assessment.gaps.join(" | ");
-    payload.result_next_actions = assessment.nextActions
-      .map((a) => `${a.title} (${a.effort}): ${a.detail}`)
-      .join(" | ");
-    payload.result_opportunities = assessment.opportunities
-      .map((o) => `${o.title}: ${o.why}`)
-      .join(" | ");
-    payload.result_closing_note = assessment.closingNote;
-    if (assessmentSource) payload.result_source = assessmentSource;
-  }
+  payload.result_headline = assessment?.headline ?? "";
+  payload.result_where_you_are = assessment?.whereYouAre ?? "";
+  payload.result_strengths = assessment?.strengths.join(" | ") ?? "";
+  payload.result_gaps = assessment?.gaps.join(" | ") ?? "";
+  payload.result_next_actions =
+    assessment?.nextActions.map((a) => `${a.title} (${a.effort}): ${a.detail}`).join(" | ") ?? "";
+  payload.result_opportunities =
+    assessment?.opportunities.map((o) => `${o.title}: ${o.why}`).join(" | ") ?? "";
+  payload.result_closing_note = assessment?.closingNote ?? "";
+  payload.result_source = assessmentSource ?? "";
 
   return payload;
 }

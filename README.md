@@ -77,6 +77,24 @@ arrives in the CRM tagged as Podcast on both fields.
 A webhook failure never reaches the visitor: the route logs it and still returns `ok`,
 and the request times out after 8 seconds so a slow CRM cannot hold the browser open.
 
+### Sending a test lead
+
+With the dev server running, `npm run test:webhook` pushes one representative lead
+through the real `/api/lead` route — both events, every question answered — so the CRM
+receives every field at once and the mapping can be built against it.
+
+```bash
+npm run test:webhook
+```
+
+It sends to whatever `ARENA_LEAD_WEBHOOK_URL` the dev server started with and **creates a
+real contact there**. Override the identity with `TEST_EMAIL`, `TEST_FIRST_NAME` and
+`TEST_LAST_NAME`. To rehearse without touching the CRM, blank `ARENA_LEAD_WEBHOOK_URL`
+and read the payload from the dev server console instead.
+
+Note that a visitor who abandons mid-quiz only ever produces the `capture` event, so
+their contact carries a name, an email and the campaign fields but no answers.
+
 ## Booking
 
 The result page embeds the GoHighLevel booking widget inline rather than linking out, so

@@ -23,8 +23,8 @@ with an empty file the app runs end to end.
 | Variable | Default | What it does |
 | --- | --- | --- |
 | `NEXT_PUBLIC_GATE_MODE` | `first` | Where the lead form sits: `first` (before the questions), `last` (after them), `off` (no gate). |
-| `NEXT_PUBLIC_ARENA_BOOKING_URL` | Arena's LeadConnector widget | GoHighLevel booking widget embedded on the result page. |
-| `NEXT_PUBLIC_ARENA_CTA_URL` | the widget URL | Plain link shown only when scripting is unavailable. |
+| `NEXT_PUBLIC_ARENA_BOOKING_URL` | `https://calendly.com/ankita-arenastrategic/30min` | Calendly event embedded on the result page. |
+| `NEXT_PUBLIC_ARENA_CTA_URL` | the Calendly URL | Plain link shown only when scripting is unavailable. |
 | `ANTHROPIC_API_KEY` | _empty_ | When set, Claude writes the result (`source: "claude"`). When empty, the roadmap's own rules do (`source: "mock"`), and the result footer says so. |
 | `ARENA_MODEL` | `claude-sonnet-5` | Model used for the written result. |
 | `ARENA_LEAD_WEBHOOK_URL` | _empty_ | POST each captured lead to a GoHighLevel inbound webhook. Without it leads are only logged to the server console. |
@@ -100,14 +100,17 @@ their contact carries a name, an email and the campaign fields but no answers.
 
 ## Booking
 
-The result page embeds the GoHighLevel booking widget inline rather than linking out, so
-the roadmap stays on screen while the visitor picks a time. `components/booking-embed.tsx`
-renders the iframe and loads `form_embed.js`, which sets the iframe height from a
-postMessage — the `min-height` on the iframe only stops it collapsing before that runs,
-and `BOOKING_EMBED_ID` in `lib/config.ts` is the id that script targets.
+The result page embeds the Calendly event inline rather than linking out, so the roadmap
+stays on screen while the visitor picks a time. `components/booking-embed.tsx` loads
+Calendly's `widget.js` and mounts the widget with `Calendly.initInlineWidget` — the
+script's own page scan runs only once on load and would miss a widget React renders
+later.
 
-The visitor's name and email are appended to the widget URL as `first_name`, `last_name`
-and `email` so they are not asked to type them a second time.
+The visitor's name and email are added to the Calendly URL (`name`, `first_name`,
+`last_name`, `email`) so they are not asked to
+type them a second time. Calendly bookings do not reach GoHighLevel on their own; connect
+the two (Calendly's GoHighLevel integration, Zapier, or a Calendly webhook) if the CRM
+should see the booked call.
 
 ## How it is put together
 

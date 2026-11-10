@@ -11,13 +11,9 @@ const rawGateMode = process.env.NEXT_PUBLIC_GATE_MODE;
 export const GATE_MODE: GateMode =
   rawGateMode === "last" || rawGateMode === "off" ? rawGateMode : "first";
 
-/** GoHighLevel booking widget, embedded on the result page. */
+/** Calendly event, embedded inline on the result page. */
 export const BOOKING_EMBED_URL =
-  process.env.NEXT_PUBLIC_ARENA_BOOKING_URL ||
-  "https://api.leadconnectorhq.com/widget/booking/tJ5FaaRpujPjZSJFvtga";
-
-/** form_embed.js targets the iframe by id to set its height. */
-export const BOOKING_EMBED_ID = "tJ5FaaRpujPjZSJFvtga_1790320579275";
+  process.env.NEXT_PUBLIC_ARENA_BOOKING_URL || "https://calendly.com/ankita-arenastrategic/30min";
 
 /** Plain link used when scripting or the iframe is unavailable. */
 export const BOOKING_FALLBACK_URL = process.env.NEXT_PUBLIC_ARENA_CTA_URL || BOOKING_EMBED_URL;
